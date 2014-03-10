@@ -21,7 +21,6 @@ module Network.Wai.Predicate.Request
     ) where
 
 import Data.ByteString (ByteString)
-import Data.CaseInsensitive (mk)
 import Data.Maybe (mapMaybe)
 import Data.Vector (Vector, (!?))
 import Data.Word
@@ -89,7 +88,7 @@ fromRequest rq =
     Req rq (concatMap parseCookies (getHeaders "Cookie" rq))
            (Vec.fromList . splitSegments . Wai.rawPathInfo $ rq)
 
-lookupHeader :: HasHeaders r => ByteString -> r -> [ByteString]
+lookupHeader :: HasHeaders r => HeaderName -> r -> [ByteString]
 lookupHeader name = getHeaders name
 
 lookupSegment :: HasPath r => Word -> r -> Maybe ByteString
@@ -101,8 +100,8 @@ lookupCookie name = map snd . filter ((name ==) . fst) . cookies
 lookupQuery :: HasQuery r => ByteString -> r -> [ByteString]
 lookupQuery name = mapMaybe snd . filter ((name ==) . fst) . queryItems
 
-getHeaders :: HasHeaders r => ByteString -> r -> [ByteString]
-getHeaders name = map snd . filter ((mk name ==) . fst) . headers
+getHeaders :: HasHeaders r => HeaderName -> r -> [ByteString]
+getHeaders name = map snd . filter ((name ==) . fst) . headers
 
 -----------------------------------------------------------------------------
 -- Internal

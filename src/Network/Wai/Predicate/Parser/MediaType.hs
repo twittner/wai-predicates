@@ -13,6 +13,7 @@ import Control.Applicative
 import Data.Attoparsec.Char8
 import Data.ByteString (ByteString)
 import Data.List (sortBy)
+import Network.HTTP.Types
 import Network.Wai.Predicate.Request
 
 import qualified Data.ByteString.Char8 as C
@@ -24,7 +25,7 @@ data MediaType = MediaType
     , medParams  :: ![(ByteString, ByteString)]
     } deriving (Eq, Show)
 
-readMediaTypes :: (HasHeaders r) => ByteString -> r -> [MediaType]
+readMediaTypes :: (HasHeaders r) => HeaderName -> r -> [MediaType]
 readMediaTypes k r =
     sortBy q . concatMap parseMediaTypes $ lookupHeader k r
   where

@@ -1,5 +1,5 @@
 name:                wai-predicates
-version:             0.2.1
+version:             0.3
 synopsis:            WAI request predicates
 license:             OtherLicense
 license-file:        LICENSE
@@ -13,6 +13,7 @@ cabal-version:       >= 1.10
 
 extra-source-files:
     README.md
+    CHANGELOG.md
 
 description:
     Evaluate predicate functions against WAI requests and receive

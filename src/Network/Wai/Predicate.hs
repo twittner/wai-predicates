@@ -28,13 +28,13 @@ module Network.Wai.Predicate
 
 import Data.ByteString (ByteString)
 import Data.ByteString.From
-import Data.CaseInsensitive (mk)
+import Data.CaseInsensitive (original)
 import Data.List (find)
 import Data.Monoid
 import Data.Maybe (isJust)
 import Data.Predicate
 import Data.Word
-import Network.HTTP.Types.Status
+import Network.HTTP.Types
 import Network.Wai.Predicate.Accept
 import Network.Wai.Predicate.Content
 import Network.Wai.Predicate.Error
@@ -57,16 +57,16 @@ hasQuery k r =
         then Fail (err status400 ("Missing query '" <> k <> "'."))
         else return ()
 
-header :: (HasHeaders r, FromByteString a) => ByteString -> Predicate r Error a
+header :: (HasHeaders r, FromByteString a) => HeaderName -> Predicate r Error a
 header k r = case lookupHeader k r of
-    [] -> Fail (err status400 ("Missing header '" <> k <> "'."))
+    [] -> Fail (err status400 ("Missing header '" <> original k <> "'."))
     hh -> either (Fail . err status400) return (readValues hh)
 
-hasHeader :: (HasHeaders r) => ByteString -> Predicate r Error ()
+hasHeader :: (HasHeaders r) => HeaderName -> Predicate r Error ()
 hasHeader k r =
-    if isJust $ find ((mk k ==) . fst) (headers r)
+    if isJust $ find ((k ==) . fst) (headers r)
         then return ()
-        else Fail (err status400 ("Missing header '" <> k <> "'."))
+        else Fail (err status400 ("Missing header '" <> original k <> "'."))
 
 segment :: (HasPath r, FromByteString a) => Word -> Predicate r Error a
 segment i r = case lookupSegment i r of

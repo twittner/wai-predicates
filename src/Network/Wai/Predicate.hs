@@ -22,6 +22,9 @@ module Network.Wai.Predicate
 
     , accept
     , contentType
+
+    , fromVault
+
     , module Network.Wai.Predicate.MediaType
     , module Network.Wai.Predicate.Error
     ) where
@@ -33,6 +36,7 @@ import Data.List (find)
 import Data.Monoid
 import Data.Maybe (isJust)
 import Data.Predicate
+import Data.Vault.Lazy (Key)
 import Data.Word
 import Network.HTTP.Types
 import Network.Wai.Predicate.Accept
@@ -42,6 +46,8 @@ import Network.Wai.Predicate.MediaType
 import Network.Wai.Predicate.Request
 import Network.Wai.Predicate.Utility
 import Network.Wai
+
+import qualified Data.Vault.Lazy as Vault
 
 request :: (HasRequest r) => Predicate r f Request
 request = return . getRequest
@@ -89,3 +95,9 @@ hasCookie k r =
     if null (lookupCookie k r)
         then Fail (err status400 ("Missing cookie '" <> k <> "'."))
         else return ()
+
+fromVault :: HasVault r => Key a -> Predicate r Error a
+fromVault k r = case Vault.lookup k (requestVault r) of
+    Nothing -> Fail (err status500 "Vault does not contain key.")
+    Just  a -> return a
+

@@ -1,5 +1,5 @@
 name:                wai-predicates
-version:             0.3
+version:             0.3.1
 synopsis:            WAI request predicates
 license:             OtherLicense
 license-file:        LICENSE
@@ -55,6 +55,7 @@ library
       , case-insensitive == 1.1.*
       , http-types       == 0.8.*
       , transformers     == 0.3.*
+      , vault            == 0.3.*
       , vector           == 0.10.*
       , wai              >= 2.0 && < 2.2
 

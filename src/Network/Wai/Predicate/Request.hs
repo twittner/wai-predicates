@@ -12,6 +12,7 @@ module Network.Wai.Predicate.Request
     , HasQuery   (..)
     , HasPath    (..)
     , HasRequest (..)
+    , HasVault   (..)
 
     , fromRequest
     , lookupHeader
@@ -23,6 +24,7 @@ module Network.Wai.Predicate.Request
 import Data.ByteString (ByteString)
 import Data.Maybe (mapMaybe)
 import Data.Vector (Vector, (!?))
+import Data.Vault.Lazy (Vault)
 import Data.Word
 import Network.HTTP.Types
 import Network.Wai (Request)
@@ -49,6 +51,9 @@ class HasQuery a where
 
 class HasPath a where
     segments :: a -> Vector ByteString
+
+class HasVault a where
+    requestVault :: a -> Vault
 
 data Req = Req
     { _request  :: Request
@@ -82,6 +87,9 @@ instance HasCookies Req where
 
 instance HasPath Req where
     segments = _segments
+
+instance HasVault Req where
+    requestVault = Wai.vault . _request
 
 fromRequest :: Request -> Req
 fromRequest rq =

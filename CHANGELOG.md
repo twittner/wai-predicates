@@ -1,3 +1,12 @@
+0.4
+-----------------------------------------------------------------------------
+- Use `singletons` library instead of `GHC.TypeLits` from base.
+- Remove `mapResult` (use `fmap` instead).
+
+0.3.2
+-----------------------------------------------------------------------------
+- Update dependencies constraints.
+
 0.3.1
 -----------------------------------------------------------------------------
 - Add `fromVault` predicate and `HasVault` type-class.

@@ -15,7 +15,7 @@ import Control.Monad
 import Data.ByteString (ByteString)
 import Data.Monoid hiding (All)
 import Data.Predicate
-import GHC.TypeLits
+import Data.Singletons.TypeLits (Symbol)
 import Data.Maybe
 import Network.HTTP.Types.Status
 import Network.Wai.Predicate.Error

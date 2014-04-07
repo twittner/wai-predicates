@@ -5,8 +5,8 @@
 {-# LANGUAGE TypeOperators #-}
 
 module Data.Predicate
-    ( Predicate
-    , module Data.Predicate.Result
+    ( -- * Predicate
+      Predicate
     , constant
     , failure
     , true
@@ -19,10 +19,12 @@ module Data.Predicate
     , (|||)
     , opt
     , def
-    , mapResult
     , mapOkay
     , mapFail
     , exec
+    -- * Result
+    , module Data.Predicate.Result
+    -- * Product
     , module Data.Predicate.Product
     ) where
 
@@ -58,7 +60,7 @@ infixr 2 |||
 
 -- | A predicate corresponding to the logical AND connective
 -- of two predicate.
-and, (.&.) :: Predicate a f t -> Predicate a f t' -> Predicate a f (t ::: t')
+and :: Predicate a f t -> Predicate a f t' -> Predicate a f (t ::: t')
 and f g x = f x `cmp` g x
   where
     cmp (Okay d y) (Okay w z) = Okay (d + w) (y ::: z)
@@ -72,7 +74,7 @@ and f g x = f x `cmp` g x
 -- If both arguments evaluate to @Okay@ the one with the
 -- smaller \"delta\" will be preferred, or--if equal--the
 -- left-hand argument.
-or, (.|.) :: Predicate a f t -> Predicate a f t -> Predicate a f t
+or :: Predicate a f t -> Predicate a f t -> Predicate a f t
 or f g x = f x `cmp` g x
   where
     cmp a@(Okay d _) b@(Okay w _)  = if w < d then b else a
@@ -87,7 +89,7 @@ or f g x = f x `cmp` g x
 -- If both arguments evaluate to @Okay@ the one with the
 -- smaller \"delta\" will be preferred, or--if equal--the
 -- left-hand argument.
-orElse, (|||) :: Predicate a f t -> Predicate a f t' -> Predicate a f (Either t t')
+orElse :: Predicate a f t -> Predicate a f t' -> Predicate a f (Either t t')
 orElse f g x = f x `cmp` g x
   where
     cmp (Okay d y) (Okay w z) = if w < d then Okay w (Right z) else Okay d (Left y)
@@ -95,22 +97,26 @@ orElse f g x = f x `cmp` g x
     cmp (Fail   _) (Okay d y) = Okay d (Right y)
     cmp (Fail   _) (Fail   y) = Fail y
 
+-- | Alias of 'and'.
+(.&.) :: Predicate a f t -> Predicate a f t' -> Predicate a f (t ::: t')
 (.&.) = and
+
+-- | Alias of 'or'.
+(.|.) :: Predicate a f t -> Predicate a f t -> Predicate a f t
 (.|.) = or
+
+-- | Alias of 'orElse'.
+(|||) :: Predicate a f t -> Predicate a f t' -> Predicate a f (Either t t')
 (|||) = orElse
 
--- | Map the result of the given predicate to some other result.
-mapResult :: (Result f t -> Result f' t') -> Predicate a f t -> Predicate a f' t'
-mapResult f p = f . p
-
--- | Like 'mapResult', but only maps the @Okay@ metadata to another result.
+-- | Like 'fmap', but only maps the @Okay@ metadata to another result.
 mapOkay :: (t -> Result f t') -> Predicate a f t -> Predicate a f t'
 mapOkay f p a =
     case p a of
         Okay _ x -> f x
         Fail   x -> Fail x
 
--- | Like 'mapResult', but only maps the @Fail@ metadata to another result.
+-- | Like 'mapOkay', but for the @Fail@ case.
 mapFail :: (f -> Result f' t) -> Predicate a f t -> Predicate a f' t
 mapFail f p a =
     case p a of
@@ -121,12 +127,12 @@ mapFail f p a =
 -- i.e. the @Okay@ metadata type becomes a 'Maybe' and in the failure-case
 -- 'Nothing' is returned.
 opt :: Predicate a f t -> Predicate a f (Maybe t)
-opt = mapResult (result (const $ return Nothing) (\d x -> Okay d (Just x)))
+opt = fmap (result (const $ return Nothing) (\d x -> Okay d (Just x)))
 
 -- | A predicate modifier which returns as @Okay@ metadata the provided default
 -- value if the given predicate fails.
 def :: t -> Predicate a f t -> Predicate a f t
-def t = mapResult (result (const $ return t) Okay)
+def t = fmap (result (const $ return t) Okay)
 
 exec :: Predicate a f t -> a -> (f -> b) -> (t -> b) -> b
 exec p a g f = case p a of

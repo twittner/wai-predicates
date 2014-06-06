@@ -4,9 +4,9 @@
 module Tests.Wai.Predicate (tests) where
 
 import Data.ByteString (ByteString)
-import Network.HTTP.Types.Status
 import Network.Wai.Predicate
 import Network.Wai.Predicate.Request
+import Network.Wai.Predicate.Utility
 import Test.Tasty
 import Test.Tasty.HUnit
 import Tests.Wai.Util
@@ -29,7 +29,8 @@ testAcceptJson = do
     Okay 0 (Media "application" "json" 1.0 []) @=? (accept "application" "json") rq0
 
     let rq1 = fromRequest . withHeader "Accept" "foo/bar" $ defRequest "/"
-    Fail (err status406 ("Expected 'Accept: application/json'.")) @=? (accept "application" "json") rq1
+    Fail (e406 & setMessage "Expected 'Accept: application/json'.")
+        @=? (accept "application" "json") rq1
 
 testAcceptThrift :: IO ()
 testAcceptThrift = do
@@ -37,7 +38,8 @@ testAcceptThrift = do
     Okay 0 (Media "application" "x-thrift" 1.0 []) @=? (accept "application" "x-thrift") rq0
 
     let rq1 = fromRequest . json $ defRequest "/"
-    Fail (err status406 ("Expected 'Accept: application/x-thrift'.")) @=? (accept "application" "x-thrift") rq1
+    Fail (e406 & setMessage "Expected 'Accept: application/x-thrift'.")
+        @=? (accept "application" "x-thrift") rq1
 
 testAcceptAll :: IO ()
 testAcceptAll = do
@@ -51,7 +53,8 @@ testContentTypePlain = do
     Okay 0 (Media "text" "plain" 1.0 []) @=? (contentType "text" "plain") rq0
 
     let rq1 = fromRequest . withHeader "Content-Type" "text/html" $ defRequest "/"
-    Fail (err status415 ("Expected 'Content-Type: text/plain'.")) @=? (contentType "text" "plain") rq1
+    Fail (e415 & setMessage "Expected 'Content-Type: text/plain'.")
+        @=? (contentType "text" "plain") rq1
 
 testContentTypeAll :: IO ()
 testContentTypeAll = do
@@ -64,7 +67,8 @@ testQuery = do
     Okay 0 ("y" :: ByteString) @=? (query "x") rq0
 
     let rq1 = fromRequest $ defRequest "/"
-    Fail (err status400 ("Missing query 'x'.")) @=? (query "x" :: Predicate Req Error ByteString) rq1
+    Fail (e400 & setReason NotAvailable . setSource "x" . addLabel "query")
+        @=? (query "x" :: Predicate Req Error ByteString) rq1
 
 testQueryOpt :: IO ()
 testQueryOpt = do

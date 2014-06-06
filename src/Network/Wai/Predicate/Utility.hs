@@ -4,7 +4,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Network.Wai.Predicate.Utility (readValues) where
+module Network.Wai.Predicate.Utility (readValues, (&)) where
 
 import Data.ByteString (ByteString)
 import Data.ByteString.From
@@ -18,3 +18,7 @@ readValues = foldl' res (Left "no parse") . map (runParser parser)
     res (Right x) _         = Right x
     res _         (Left  x) = Left (fromString x)
 
+infixl 1 &
+(&) :: a -> (a -> b) -> b
+a & f = f a
+{-# INLINE (&) #-}

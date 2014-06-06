@@ -17,14 +17,14 @@ import Data.Monoid hiding (All)
 import Data.Predicate
 import Data.Singletons.TypeLits (Symbol)
 import Data.Maybe
-import Network.HTTP.Types.Status
 import Network.Wai.Predicate.Error
 import Network.Wai.Predicate.MediaType
 import Network.Wai.Predicate.Request
+import Network.Wai.Predicate.Utility
 
 import qualified Network.Wai.Predicate.Parser.MediaType as M
 
-contentType :: (HasHeaders r)
+contentType :: HasHeaders r
             => ByteString
             -> ByteString
             -> Predicate r Error (Media (t :: Symbol) (s :: Symbol))
@@ -32,7 +32,7 @@ contentType t s r =
     let mtypes = M.readMediaTypes "content-type" r in
     case findContentType t s mtypes of
         m:_ -> Okay (1.0 - mediaQuality m) m
-        []  -> Fail (err status415 msg)
+        []  -> Fail (e415 & setMessage msg)
   where
     msg = "Expected 'Content-Type: " <> t <> "/" <> s <> "'."
 

@@ -1,3 +1,10 @@
+0.6
+-----------------------------------------------------------------------------
+- Move `def` and `opt` from `Data.Predicate` to `Network.Wai.Predicate` and
+  make both specific to `Predicate r Error t`.
+- Remove `mapOkay` and `mapFail`.
+- Update `bytestring-from` dependency.
+
 0.5
 -----------------------------------------------------------------------------
 - Update dependencies constraints.

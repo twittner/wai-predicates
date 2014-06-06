@@ -17,10 +17,6 @@ module Data.Predicate
     , (.&.)
     , (.|.)
     , (|||)
-    , opt
-    , def
-    , mapOkay
-    , mapFail
     , exec
     -- * Result
     , module Data.Predicate.Result
@@ -108,31 +104,6 @@ orElse f g x = f x `cmp` g x
 -- | Alias of 'orElse'.
 (|||) :: Predicate a f t -> Predicate a f t' -> Predicate a f (Either t t')
 (|||) = orElse
-
--- | Like 'fmap', but only maps the @Okay@ metadata to another result.
-mapOkay :: (t -> Result f t') -> Predicate a f t -> Predicate a f t'
-mapOkay f p a =
-    case p a of
-        Okay _ x -> f x
-        Fail   x -> Fail x
-
--- | Like 'mapOkay', but for the @Fail@ case.
-mapFail :: (f -> Result f' t) -> Predicate a f t -> Predicate a f' t
-mapFail f p a =
-    case p a of
-        Fail   x -> f x
-        Okay d x -> Okay d x
-
--- | A predicate modifier which makes the given predicate optional,
--- i.e. the @Okay@ metadata type becomes a 'Maybe' and in the failure-case
--- 'Nothing' is returned.
-opt :: Predicate a f t -> Predicate a f (Maybe t)
-opt = fmap (result (const $ return Nothing) (\d x -> Okay d (Just x)))
-
--- | A predicate modifier which returns as @Okay@ metadata the provided default
--- value if the given predicate fails.
-def :: t -> Predicate a f t -> Predicate a f t
-def t = fmap (result (const $ return t) Okay)
 
 exec :: Predicate a f t -> a -> (f -> b) -> (t -> b) -> b
 exec p a g f = case p a of

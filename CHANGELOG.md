@@ -1,3 +1,7 @@
+0.7
+-----------------------------------------------------------------------------
+- Update dependencies to include WAI 3.0.x
+
 0.6
 -----------------------------------------------------------------------------
 - Move `def` and `opt` from `Data.Predicate` to `Network.Wai.Predicate` and

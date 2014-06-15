@@ -10,7 +10,7 @@ module Network.Wai.Predicate.Parser.MediaType
     ) where
 
 import Control.Applicative
-import Data.Attoparsec.Char8
+import Data.Attoparsec.ByteString.Char8
 import Data.ByteString (ByteString)
 import Data.List (sortBy)
 import Network.HTTP.Types

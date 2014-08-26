@@ -6,7 +6,6 @@ module Tests.Data.Predicate (tests) where
 
 import Control.Applicative hiding (Const, empty)
 import Data.Predicate
-import Test.QuickCheck hiding (Result, (.&.))
 import Test.Tasty
 import Test.Tasty.QuickCheck hiding ((.&.))
 
@@ -46,3 +45,6 @@ instance Arbitrary (Result Int Char) where
 
 instance Arbitrary (Predicate () Int Char) where
     arbitrary = (\r -> const r) <$> (arbitrary :: Gen (Result Int Char))
+
+instance Show (Predicate () Int Char) where
+    show _ = "Predicate () Int Char"

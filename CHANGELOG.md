@@ -1,3 +1,8 @@
+0.8
+-----------------------------------------------------------------------------
+- Replace `bytestring-from` with `bytestring-conversion` and update
+  test dependencies.
+
 0.7
 -----------------------------------------------------------------------------
 - Update dependencies to include WAI 3.0.x

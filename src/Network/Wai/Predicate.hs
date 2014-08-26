@@ -34,7 +34,7 @@ module Network.Wai.Predicate
 
 import Control.Monad (when)
 import Data.ByteString (ByteString)
-import Data.ByteString.From
+import Data.ByteString.Conversion
 import Data.CaseInsensitive (original)
 import Data.List (find)
 import Data.Maybe (isNothing)

@@ -7,7 +7,7 @@
 module Network.Wai.Predicate.Utility (readValues, (&)) where
 
 import Data.ByteString (ByteString)
-import Data.ByteString.From
+import Data.ByteString.Conversion
 import Data.List (foldl')
 import Data.String (fromString)
 

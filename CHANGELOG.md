@@ -1,3 +1,7 @@
+0.8.2
+-----------------------------------------------------------------------------
+- Update `bytestring-conversion` to version 0.2
+
 0.8
 -----------------------------------------------------------------------------
 - Replace `bytestring-from` with `bytestring-conversion` and update

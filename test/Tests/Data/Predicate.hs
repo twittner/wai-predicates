@@ -1,6 +1,10 @@
+{-# LANGUAGE CPP                  #-}
 {-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE OverlappingInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+
+#if __GLASGOW_HASKELL__ < 710
+{-# LANGUAGE OverlappingInstances #-}
+#endif
 
 module Tests.Data.Predicate (tests) where
 
@@ -8,6 +12,7 @@ import Control.Applicative hiding (Const, empty)
 import Data.Predicate
 import Test.Tasty
 import Test.Tasty.QuickCheck hiding ((.&.))
+import Prelude
 
 tests :: TestTree
 tests = testGroup "Data.Predicate"

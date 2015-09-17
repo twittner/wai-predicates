@@ -29,6 +29,7 @@ import Data.Word
 import Network.HTTP.Types
 import Network.Wai (Request)
 import Web.Cookie
+import Prelude
 
 import qualified Data.ByteString as B
 import qualified Network.Wai     as Wai
@@ -121,6 +122,6 @@ splitSegments a
     | otherwise = if B.head a == slash then go (B.tail a) else go a
   where
     go b =
-        let (x, y) = B.breakByte slash b
+        let (x, y) = B.break (== slash) b
         in urlDecode False x : if B.null y then [] else go (B.tail y)
     slash = 47

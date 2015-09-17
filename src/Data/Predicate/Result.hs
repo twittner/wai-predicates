@@ -10,6 +10,7 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.IO.Class
+import Prelude
 
 -- | A 'Bool'-like type where each branch--@Fail@ and @Okay@--carries
 -- some metadata.

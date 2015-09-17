@@ -49,6 +49,7 @@ import Network.Wai.Predicate.MediaType
 import Network.Wai.Predicate.Request
 import Network.Wai.Predicate.Utility
 import Network.Wai
+import Prelude
 
 import qualified Data.Vault.Lazy as Vault
 
